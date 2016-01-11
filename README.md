@@ -1,2 +1,4 @@
 # accountRepo
-Angular Application to Access GitBub Accout and Shows Repository
+To Access gitHub Account and display the repositories
+
+Using AngularJS created this application
