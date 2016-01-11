@@ -10,8 +10,50 @@
   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.0/angular.js"></script>
 </head>
 
-<body>
+<body ng-controller="MainController as mc">
   <div class="container">
+    <h1 ng-bind="mc.message"></h1>
+    <div ng-bind="mc.error"></div>
+    <div ng-bind="mc.username"></div>
+    <span ng-bind="mc.countDown"></span>
+    <form class="form-inline" ng-submit="mc.search(mc.userName);">
+      <div class="form-group">
+        <label for="searchRepository">Repository:</label>
+        <input type="search" required placeholder="Search Repo Here" ng-model="mc.userName" class="form-control" id="repoInput" />
+        <button type="submit" class="btn btn-default">Search</button>
+      </div>
+    </form>
+    <div ng-if="mc.user">
+      <h2 ng-bind="mc.user.name"></h2>
+      <img ng-src="{{mc.user.avatar_url}}" title="{{mc.user.name}}" class="img-responsive img-rounded center-block" style=" width= 100px; height=100px;" />
+      <div class="form-group">
+        <label for="selectOne">Order By:</label>
+        <select class="form-control" id="selectOne" ng-model="mc.repoSortOrder">
+          <option value="+name">Name</option>
+          <option value="-stargazers_count">Stars</option>
+          <option value="+language">Language</option>
+        </select>
+      </div>
+    </div>
+    <div class="table-responsive" id="userDetails">
+      <table ng-if="!!mc.user" class="table table-striped">
+        <caption>GitHub Repository Information</caption>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Stars</th>
+            <th>Language</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="repo in mc.user.repos | orderBy:mc.repoSortOrder">
+            <td ng-bind="repo.name"></td>
+            <td ng-bind="(repo.stargazers_count | number)"></td>
+            <td ng-bind="repo.language"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
   <script type="text/javascript">
   (function(angular) {
@@ -19,6 +61,61 @@
 
     var gitHubAngular = angular.module('gitHubAngular', []);
     console.dir(gitHubAngular);
+
+    var MainController = function MainController($scope, $http, $log, $interval, $location, $anchorScroll) {
+      var self = this;
+      //self.username = 'Patel Sarkar';
+      self.message = 'GitHub Repository Information';
+      self.userName = 'angular';
+      self.repoSortOrder = '-stargazers_count';
+      self.countDown = 7;
+
+
+      self.onUserComplete = function onUserComplete(response) {
+        self.user = response.data;
+        console.log(self.user);
+        $http.get(self.user.repos_url)
+          .then(self.onRepos, self.onError);
+      };
+
+      self.onRepos = function onRepos(response) {
+        self.user.repos = response.data;
+        console.log(self.user.repos);
+        $location.hash('userDetails');
+        $anchorScroll();
+      };
+
+      self.onError = function onError(response) {
+        self.error = 'Could Not Fetch The Data From The Server!' + response;
+      };
+
+      self.search = function search(username) {
+        $log.info('Searching for ' + username);
+        $http.get('https://api.github.com/users/' + username)
+          .then(self.onUserComplete, self.onError);
+        if (countDown) {
+          console.log(countDown);
+          $interval.cancel(countDown);
+          self.countDown = null;
+        }
+      };
+
+      self.decrementCountDown = function decrementCountDown() {
+        self.countDown -= 1;
+        if (self.countDown < 1) {
+          self.search(self.userName);
+        }
+      };
+
+      var countDown = null;
+      var startCountDown = function startCountDown() {
+        countDown = $interval(self.decrementCountDown, 1000, self.countDown);
+      };
+
+      startCountDown();
+    };
+
+    gitHubAngular.controller('MainController', ['$scope', '$http', '$log', '$interval', '$location', '$anchorScroll', MainController]);
 
 
 
