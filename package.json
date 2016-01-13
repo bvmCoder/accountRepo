@@ -1,0 +1,22 @@
+{
+  "name": "githubaccountinformation",
+  "version": "1.0.0",
+  "description": "Find the Account Information using gitHub API",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bvmCoder/accountRepo.git"
+  },
+  "author": "Dixit Patel",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bvmCoder/accountRepo/issues"
+  },
+  "homepage": "https://github.com/bvmCoder/accountRepo#readme",
+  "devDependencies": {
+    "bower": "^1.7.2"
+  }
+}
