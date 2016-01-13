@@ -1,0 +1,31 @@
+<div>
+  <h2 ng-bind="mc.user.name"></h2>
+  <img ng-src="{{mc.user.avatar_url}}" title="{{mc.user.name}}" class="img-responsive img-rounded center-block" style=" width= 100px; height=100px;" />
+  <div class="form-group">
+    <label for="selectOne">Order By:</label>
+    <select class="form-control" id="selectOne" ng-model="mc.repoSortOrder">
+      <option value="+name">Name</option>
+      <option value="-stargazers_count">Stars</option>
+      <option value="+language">Language</option>
+    </select>
+  </div>
+</div>
+<div class="table-responsive" id="userDetails">
+  <table ng-if="!!mc.user" class="table table-striped">
+    <caption>GitHub Repository Information</caption>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Stars</th>
+        <th>Language</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="repo in mc.user.repos | orderBy:mc.repoSortOrder">
+        <td ng-bind="repo.name"></td>
+        <td ng-bind="(repo.stargazers_count | number)"></td>
+        <td ng-bind="repo.language"></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
