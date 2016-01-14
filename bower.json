@@ -1,0 +1,25 @@
+{
+  "name": "githubaccountinformation",
+  "description": "Find the Account Information using gitHub API",
+  "main": "index.html",
+  "authors": [
+    "Dixit Patel"
+  ],
+  "license": "ISC",
+  "homepage": "https://github.com/bvmCoder/accountRepo",
+  "moduleType": [
+    "amd",
+    "es6",
+    "globals",
+    "node",
+    "yui"
+  ],
+  "private": true,
+  "dependencies": {
+    "jquery": "~2.2.0",
+    "toastr": "~2.1.2",
+    "angular": "~1.4.8",
+    "angular-resource": "~1.4.8",
+    "angular-route": "~1.4.8"
+  }
+}
