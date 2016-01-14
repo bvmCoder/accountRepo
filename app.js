@@ -6,7 +6,7 @@
       var gitHubAngular = angular.module('gitHubAngular', []);
       console.dir(gitHubAngular);
 
-      var MainController = function MainController($scope, $http, $log, $interval, $location, $anchorScroll) {
+      var MainController = function MainController($scope, userInformationService, $log, $interval, $location, $anchorScroll) {
           var self = this;
           //self.username = 'Patel Sarkar';
           self.message = 'GitHub Repository Information';
@@ -15,15 +15,17 @@
           self.countDown = 7;
 
 
-          self.onUserComplete = function onUserComplete(response) {
-              self.user = response.data;
+          self.onUserComplete = function onUserComplete(data) {
+              self.user = data;
               console.log(self.user);
-              $http.get(self.user.repos_url)
-                  .then(self.onRepos, self.onError);
+              /*$http.get(self.user.repos_url)
+                  .then(self.onRepos, self.onError);*/
+
+              userInformationService.getRepos(self.user).then(self.onRepos, self.onError);
           };
 
-          self.onRepos = function onRepos(response) {
-              self.user.repos = response.data;
+          self.onRepos = function onRepos(data) {
+              self.user.repos = data;
               console.log(self.user.repos);
               $location.hash('userDetails');
               $anchorScroll();
@@ -35,8 +37,10 @@
 
           self.search = function search(username) {
               $log.info('Searching for ' + username);
-              $http.get('https://api.github.com/users/' + username)
-                  .then(self.onUserComplete, self.onError);
+
+              userInformationService.getUser(username).then(self.onUserComplete, self.onError);
+              /*$http.get('https://api.github.com/users/' + username)
+                  .then(self.onUserComplete, self.onError);*/
               if (countDown) {
                   console.log(countDown);
                   $interval.cancel(countDown);
@@ -59,40 +63,8 @@
           startCountDown();
       };
 
-      gitHubAngular.controller('MainController', ['$scope', '$http', '$log', '$interval', '$location', '$anchorScroll', MainController]);
+      gitHubAngular.controller('MainController', ['$scope', 'userInformationService', '$log', '$interval', '$location', '$anchorScroll', MainController]);
 
 
 
   }(angular));
-
-
-
-  (function() {
-
-      var github = function($http) {
-
-          var getUser = function(username) {
-              return $http.get("https://api.github.com/users/" + username)
-                  .then(function(response) {
-                      return response.data;
-                  });
-          };
-
-          var getRepos = function(user) {
-              return $http.get(user.repos_url)
-                  .then(function(response) {
-                      return response.data;
-                  });
-          };
-
-          return {
-              getUser: getUser,
-              getRepos: getRepos
-          };
-
-      };
-
-      var module = angular.module("githubViewer");
-      module.factory("github", github);
-
-  }());
