@@ -1,6 +1,6 @@
 <div>
-  <h2 ng-bind="mc.user.name"></h2>
-  <img ng-src="{{mc.user.avatar_url}}" title="{{mc.user.name}}" class="img-responsive img-rounded center-block" style=" width= 100px; height=100px;" />
+  <h2 ng-bind="mc.user.login"></h2>
+  <img ng-src="{{mc.user.avatar_url}}" title="{{mc.user.login}}" class="img-responsive img-rounded center-block" style=" width= 100px; height=100px;" />
   <div class="form-group">
     <label for="selectOne">Order By:</label>
     <select class="form-control" id="selectOne" ng-model="mc.repoSortOrder">
